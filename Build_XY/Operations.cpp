@@ -1,64 +1,106 @@
 #include "Operations.h"
 
-bool Operations::Abs(double& res, double a)
+bool doubleEqual(double a, double b)
 {
-	res = abs(a);
-	return 1;
-}
-bool Operations::Sqrt(double& res, double a)
-{
-	if (a >= 0)
-	{
-		res = sqrt(a);
-		return 1;
-	}
-	return 0;
-}
-bool Operations::Log2(double& res, double a)
-{
-	if (a > 0)
-	{
-		res = log2(a);
-		return 1;
-	}
-	return 0;
-}
-bool Operations::Sin(double& res, double a)
-{
-	res = sin(a);
-	return 1;
-}
-bool Operations::Cos(double& res, double a)
-{
-	res = cos(a);
-	return 1;
+	return abs(a - b) < eps;
 }
 
-bool Operations::Sum(double& res, double a, double b)
+bool unaryPlus(double& res, double x)
+{
+	res = x;
+	return 1;
+}
+bool unaryMinus(double& res, double x)
+{
+	res = -x;
+	return 1;
+}
+bool abs(double& res, double x)
+{
+	res = abs(x);
+	return 1;
+}
+bool sqrt(double& res, double x)
+{
+	if (x > 0 || doubleEqual(x, 0))
+	{
+		res = sqrt(x);
+		return 1;
+	}
+	return 0;
+}
+bool log2(double& res, double x)
+{
+	if (x > 0 || doubleEqual(x, 0))
+	{
+		res = log2(x);
+		return 1;
+	}
+	return 0;
+}
+bool sin(double& res, double x)
+{
+	res = sin(x);
+	return 1;
+}
+bool cos(double& res, double x)
+{
+	res = cos(x);
+	return 1;
+}
+bool tg(double& res, double x)
+{
+	if (!doubleEqual(fmod(x + pi / 2, pi), 0))
+	{
+		res = tan(x);
+		return 1;
+	}
+	return 0;
+}
+bool ctg(double& res, double x)
+{
+	if (!doubleEqual(fmod(x, pi), 0))
+	{
+		res = 1 / tan(x);
+		return 1;
+	}
+	return 0;
+}
+
+bool addition(double& res, double a, double b)
 {
 	res = a + b;
 	return 1;
 }
-bool Operations::Difference(double& res, double a, double b)
+bool subtraction(double& res, double a, double b)
 {
 	res = a - b;
 	return 1;
 }
-bool Operations::Multiplication(double& res, double a, double b)
+bool multiplication(double& res, double a, double b)
 {
 	res = a * b;
 	return 1;
 }
-bool Operations::Division(double& res, double a, double b)
+bool division(double& res, double a, double b)
 {
-	if (b != 0)
+	if (!doubleEqual(b, 0))
 	{
 		res = a / b;
 		return 1;
 	}
 	return 0;
 }
-bool Operations::Exponentiation(double& res, double a, double b)
+bool modulo(double& res, double a, double b)
+{
+	if (!doubleEqual(b, 0))
+	{
+		res = fmod(a, b);
+		return 1;
+	}
+	return 0;
+}
+bool exponentiation(double& res, double a, double b)
 {
 	res = pow(a, b);
 	return 1;

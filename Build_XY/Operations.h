@@ -1,17 +1,25 @@
 #pragma once
+#include "Operations.h"
 #include "Utilities.h"
 
-namespace Operations
-{
-	bool Abs(double& res, double a);
-	bool Sqrt(double& res, double a);
-	bool Log2(double& res, double a);
-	bool Sin(double& res, double a);
-	bool Cos(double& res, double a);
+const double pi = 3.14159265358979323846;
+const double eps = 1e-9;
 
-	bool Sum(double& res, double a, double b);
-	bool Difference(double& res, double a, double b);
-	bool Multiplication(double& res, double a, double b);
-	bool Division(double& res, double a, double b);
-	bool Exponentiation(double& res, double a, double b);
-}
+bool doubleEqual(double a, double b);
+
+bool unaryPlus(double& res, double x);
+bool unaryMinus(double& res, double x);
+bool abs(double& res, double x);
+bool sqrt(double& res, double x);
+bool log2(double& res, double x);
+bool sin(double& res, double x);
+bool cos(double& res, double x);
+bool tg(double& res, double x);
+bool ctg(double& res, double x);
+
+bool addition(double& res, double a, double b);
+bool subtraction(double& res, double a, double b);
+bool multiplication(double& res, double a, double b);
+bool division(double& res, double a, double b);
+bool modulo(double& res, double a, double b);
+bool exponentiation(double& res, double a, double b);

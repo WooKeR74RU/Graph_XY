@@ -134,22 +134,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Brackets.cpp" />
-    <ClCompile Include="ExpressionTree.cpp" />
+    <ClCompile Include="Expression.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Normalize.cpp" />
     <ClCompile Include="Operations.cpp" />
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Brackets.h" />
-    <ClInclude Include="ExpressionTree.h" />
-    <ClInclude Include="Normalize.h" />
-    <ClInclude Include="Operations.h" />
-    <ClInclude Include="Utilities.h" />
+    <Text Include="input.txt" />
+    <Text Include="output.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="input.txt" />
+    <ClInclude Include="Expression.h" />
+    <ClInclude Include="Operations.h" />
+    <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -135,6 +135,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Expression.cpp" />
+    <ClCompile Include="FuncYX.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Operations.cpp" />
     <ClCompile Include="Utilities.cpp" />
@@ -145,6 +146,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Expression.h" />
+    <ClInclude Include="FuncYX.h" />
     <ClInclude Include="Operations.h" />
     <ClInclude Include="Utilities.h" />
   </ItemGroup>

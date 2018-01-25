@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Builder.cpp" />
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="FuncYX.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -145,6 +146,7 @@
     <Text Include="output.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Builder.h" />
     <ClInclude Include="Expression.h" />
     <ClInclude Include="FuncYX.h" />
     <ClInclude Include="Operations.h" />

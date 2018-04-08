@@ -1,11 +1,8 @@
 #pragma once
 #include "Utilities.h"
-#include "Operations.h"
 
 typedef bool(*Unary)(double&, double);
-static map<string, Unary> unaryFuncs;
 typedef bool(*Binary)(double&, double, double);
-static map<string, Binary> binaryFuncs;
 
 void initOperations();
 
@@ -22,19 +19,17 @@ struct Block
 	Block(Binary binary);
 };
 
-bool isOperation(char c);
-bool isRightAssoc(const string& oper);
 int getPrior(const string& oper);
-void addFunc(vector<Block>& sequence, const string& oper);
-
+bool isRightAssoc(const string& oper);
 vector<Block> toRPN(const string& expr);
 bool calc(double& res, const vector<Block>& sequence, const map<string, double>& variables);
 
-struct Expression
+class Expression
 {
 private:
 	vector<Block> sequence;
 public:
+	Expression();
 	Expression(const string& expr);
 	bool consider(double& res, const map<string, double>& variables) const;
 };

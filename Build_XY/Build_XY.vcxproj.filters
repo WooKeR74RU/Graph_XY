@@ -4,9 +4,6 @@
     <ClCompile Include="Expression.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Main.cpp">
-      <Filter>Файлы исходного кода</Filter>
-    </ClCompile>
     <ClCompile Include="Operations.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
@@ -16,7 +13,13 @@
     <ClCompile Include="FuncYX.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
-    <ClCompile Include="Builder.cpp">
+    <ClCompile Include="EntryPoint.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphDisplay_1.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphDisplay_2.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
@@ -33,7 +36,7 @@
     <ClInclude Include="FuncYX.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
-    <ClInclude Include="Builder.h">
+    <ClInclude Include="GraphDisplay.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

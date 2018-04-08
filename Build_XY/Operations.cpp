@@ -1,5 +1,8 @@
 #include "Operations.h"
 
+static const double pi = 3.14159265358979323846;
+static const double eps = 1e-9;
+
 bool doubleEqual(double a, double b)
 {
 	return abs(a - b) < eps;
@@ -22,7 +25,7 @@ bool abs(double& res, double x)
 }
 bool sqrt(double& res, double x)
 {
-	if (x > 0 || doubleEqual(x, 0))
+	if (x >= 0)
 	{
 		res = sqrt(x);
 		return 1;
@@ -31,7 +34,7 @@ bool sqrt(double& res, double x)
 }
 bool log2(double& res, double x)
 {
-	if (x > 0 || doubleEqual(x, 0))
+	if (x > 0)
 	{
 		res = log2(x);
 		return 1;

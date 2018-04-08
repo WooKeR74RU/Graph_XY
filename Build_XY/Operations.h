@@ -1,9 +1,5 @@
 #pragma once
-#include "Operations.h"
 #include "Utilities.h"
-
-const double pi = 3.14159265358979323846;
-const double eps = 1e-9;
 
 bool doubleEqual(double a, double b);
 

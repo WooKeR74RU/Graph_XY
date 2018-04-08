@@ -1,4 +1,8 @@
 #include "Expression.h"
+#include "Operations.h"
+
+static map<string, Unary> unaryFuncs;
+static map<string, Binary> binaryFuncs;
 
 void initOperations()
 {
@@ -39,40 +43,26 @@ Block::Block(Binary binary)
 	type = BINARY;
 	this->binary = binary;
 }
-
-bool isOperation(char c)
+int getPrior(const string& oper)
 {
-	return c == '+' || c == '-' || c == '*' || c == '/' || c == '%' || c == '^';
+	if (oper == "+" || oper == "-")
+		return 1;
+	if (oper == "*" || oper == "/")
+		return 2;
+	if (oper == "^")
+		return 3;
+	return 4;
 }
 bool isRightAssoc(const string& oper)
 {
 	return oper == "^";
 }
-int getPrior(const string& oper)
-{
-	if (oper.size() > 1)
-		return 3;
-	if (oper == "+" || oper == "-")
-		return 0;
-	if (oper == "*" || oper == "/" || oper == "%")
-		return 1;
-	if (oper == "^")
-		return 2;
-}
-void addFunc(vector<Block>& sequence, const string& oper)
-{
-	if (unaryFuncs.count(oper))
-		sequence.push_back(Block(unaryFuncs[oper]));
-	if (binaryFuncs.count(oper))
-		sequence.push_back(Block(binaryFuncs[oper]));
-}
-
 vector<Block> toRPN(const string& expr)
 {
 	vector<Block> res;
-	bool mayUnary = 1;
 	vector<string> opers;
-	for (int i = 0; i < expr.length(); i++)
+	bool mayUnary = 1;
+	for (int i = 0; i < expr.size(); i++)
 	{
 		if (expr[i] == '(')
 		{
@@ -84,74 +74,76 @@ vector<Block> toRPN(const string& expr)
 		{
 			while (opers.back() != "(")
 			{
-				addFunc(res, opers.back());
+				res.push_back(Block(binaryFuncs[opers.back()]));
 				opers.pop_back();
 			}
 			opers.pop_back();
+			while (!opers.empty() && opers.back() != "(" && getPrior(opers.back()) == 4)
+			{
+				res.push_back(Block(unaryFuncs[opers.back()]));
+				opers.pop_back();
+			}
 			mayUnary = 0;
 			continue;
 		}
-		bool isFunc = 0;
-		string block;
-		if (isalpha(expr[i]))
-		{
-			int it = i;
-			while (it < expr.size() && isalpha(expr[it]))
-				it++;
-			block = substr(expr, i, it - 1);
-			i = it - 1;
-			if (unaryFuncs.count(block) || binaryFuncs.count(block))
-				isFunc = 1;
-		}
-		if (isOperation(expr[i]))
-		{
-			if (mayUnary)
-			{
-				if (expr[i] == '-')
-					block = "minus";
-				else
-					block = "plus";
-			}
-			else
-			{
-				block = to_string(expr[i]);
-			}
-			isFunc = 1;
-		}
+		int it = i + 1;
 		if (isdigit(expr[i]) || expr[i] == '.')
 		{
-			int it = i;
 			while (it < expr.size() && (isdigit(expr[it]) || expr[it] == '.'))
 				it++;
-			block = substr(expr, i, it - 1);
-			i = it - 1;
 		}
-		if (isFunc)
+		if (isalpha(expr[i]))
 		{
-			while (!opers.empty() && (!isRightAssoc(block) && getPrior(opers.back()) >= getPrior(block) || isRightAssoc(block) && getPrior(opers.back()) > getPrior(block)))
+			while (it < expr.size() && isalpha(expr[it]))
+				it++;
+		}
+		string block = substr(expr, i, it - 1);
+		i = it - 1;
+		if (isdigit(block[0]) || block[0] == '.')
+		{
+			res.push_back(Block(stod(block)));
+			while (!opers.empty() && opers.back() != "(" && getPrior(opers.back()) == 4)
 			{
-				addFunc(res, opers.back());
+				res.push_back(Block(unaryFuncs[opers.back()]));
 				opers.pop_back();
 			}
-			opers.push_back(block);
-			mayUnary = 1;
-		}
-		else
-		{
-			if (isdigit(expr[i]))
-				res.push_back(Block(stod(block)));
-			else
-				res.push_back(Block(block));
 			mayUnary = 0;
+			continue;
 		}
+		if (mayUnary && block == "+")
+			block = "plus";
+		if (mayUnary && block == "-")
+			block = "minus";
+		if (!unaryFuncs.count(block) && !binaryFuncs.count(block))
+		{
+			res.push_back(Block(block));
+			while (!opers.empty() && opers.back() != "(" && getPrior(opers.back()) == 4)
+			{
+				res.push_back(Block(unaryFuncs[opers.back()]));
+				opers.pop_back();
+			}
+			mayUnary = 0;
+			continue;
+		}
+		if (getPrior(block) != 4)
+		{
+			while (!opers.empty() && opers.back() != "(" && (isRightAssoc(block) && getPrior(block) < getPrior(opers.back()) || !isRightAssoc(block) && getPrior(block) <= getPrior(opers.back())))
+			{
+				res.push_back(Block(binaryFuncs[opers.back()]));
+				opers.pop_back();
+			}
+		}
+		mayUnary = 1;
+		opers.push_back(block);
 	}
 	while (!opers.empty())
 	{
-		addFunc(res, opers.back());
+		res.push_back(Block(binaryFuncs[opers.back()]));
 		opers.pop_back();
 	}
 	return res;
 }
+
 bool calc(double& res, const vector<Block>& sequence, const map<string, double>& variables)
 {
 	vector<double> stck;
@@ -186,6 +178,8 @@ bool calc(double& res, const vector<Block>& sequence, const map<string, double>&
 	return 1;
 }
 
+Expression::Expression()
+{ }
 Expression::Expression(const string& expr)
 {
 	sequence = toRPN(expr);

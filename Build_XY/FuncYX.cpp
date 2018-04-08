@@ -1,5 +1,7 @@
 #include "FuncYX.h"
 
+FuncYX::FuncYX()
+{ }
 FuncYX::FuncYX(const Expression& expr)
 {
 	this->expr = expr;

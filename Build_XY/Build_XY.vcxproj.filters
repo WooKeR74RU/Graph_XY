@@ -22,6 +22,9 @@
     <ClCompile Include="GraphDisplay_2.cpp">
       <Filter>Файлы исходного кода</Filter>
     </ClCompile>
+    <ClCompile Include="Colors.cpp">
+      <Filter>Файлы исходного кода</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Expression.h">
@@ -37,6 +40,9 @@
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
     <ClInclude Include="GraphDisplay.h">
+      <Filter>Заголовочные файлы</Filter>
+    </ClInclude>
+    <ClInclude Include="Colors.h">
       <Filter>Заголовочные файлы</Filter>
     </ClInclude>
   </ItemGroup>

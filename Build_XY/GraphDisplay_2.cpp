@@ -40,12 +40,13 @@ void GraphDisplay::drawAxes()
 	x0 = max(x0, markupLength);
 	x0 = min(x0, sWidth - 1 - markupLength);
 	line(window, x0, 0, x0, sHeight - 1, cAxes);
-	for (int curY = toMathY(sHeight - 1); curY <= toMathY(0); curY++)
+	double stY = getCloseLowerNum(toMathY(sHeight - 1), axesStep);
+	for (double curY = stY; curY <= toMathY(0); curY += axesStep)
 	{
 		if (curY)
 		{
 			line(window, x0 - markupLength, toCrdY(curY), x0 + markupLength, toCrdY(curY), cAxes);
-			markupText.setString(to_string(curY));
+			markupText.setString(dtos(curY, axesPrecision));
 			int textX = x0 - 2 * markupLength - markupText.getLocalBounds().left - markupText.getLocalBounds().width;
 			if (x0 < sWidth / 5)
 				textX = x0 + 2 * markupLength - markupText.getLocalBounds().left + 1;
@@ -58,12 +59,13 @@ void GraphDisplay::drawAxes()
 	y0 = max(y0, markupLength);
 	y0 = min(y0, sHeight - 1 - markupLength);
 	line(window, 0, y0, sWidth - 1, y0, cAxes);
-	for (int curX = toMathX(0); curX < toMathX(sWidth - 1); curX++)
+	double stX = getCloseLowerNum(toMathX(0), axesStep);
+	for (double curX = stX; curX < toMathX(sWidth - 1); curX += axesStep)
 	{
 		if (curX)
 		{
 			line(window, toCrdX(curX), y0 - markupLength, toCrdX(curX), y0 + markupLength, cAxes);
-			markupText.setString(to_string(curX));
+			markupText.setString(dtos(curX, axesPrecision));
 			int textX = toCrdX(curX) - markupText.getLocalBounds().left - markupText.getLocalBounds().width / 2;
 			int textY = y0 + 2 * markupLength - markupText.getLocalBounds().top + 1;
 			if (y0 > sHeight * 4 / 5)
@@ -74,44 +76,41 @@ void GraphDisplay::drawAxes()
 	}
 }
 
-void GraphDisplay::cursorCoord()
-{
-	static const int dotRadius = 4;
-	static CircleShape dot;
-	static bool INIT = 0;
-	if (!INIT)
-	{
-		dot.setFillColor(cGraph);
-		dot.setRadius(dotRadius);
-		INIT = 1;
-	}
+//void GraphDisplay::cursorCoord()
+//{
+//	static const int dotRadius = 4;
+//	static CircleShape dot;
+//	static bool INIT = 0;
+//	if (!INIT)
+//	{
+//		dot.setFillColor(cGraph);
+//		dot.setRadius(dotRadius);
+//		INIT = 1;
+//	}
+//
+//	if (!isCursorInWindow(window))
+//		return;
+//	int cX = Mouse::getPosition(window).x;
+//	double mX = toMathX(cX);
+//	double mY;
+//	if (!func.consider(mY, mX) || isnan(mY))
+//		mY = NAN;
+//	window.setTitle(string("Graph_XY") + string(" | ") + string("x: ") + to_string(mX) + string(" y: ") + to_string(mY));
+//	dot.setPosition(cX - dotRadius, toCrdY(mY) - dotRadius);
+//	window.draw(dot);
+//}
 
-	int cX = Mouse::getPosition(window).x;
-	int cY = Mouse::getPosition(window).y;
-	if (!onScreen(cX, cY))
-		return;
-	double mX = toMathX(cX);
-	double mY;
-	if (!func.consider(mY, mX))
-		mY = NAN;
-	dot.setPosition(cX - dotRadius, toCrdY(mY) - dotRadius);
-	window.draw(dot);
-	string strX = to_string(mX);
-	string strY = to_string(mY);
-	window.setTitle(string("Graph_XY") + string(" | ") + string("x: ") + strX + string(" y: ") + strY);
-}
-
-void GraphDisplay::construct()
+void GraphDisplay::construct(const FuncYX& func, Color color)
 {
 	for (int cX = 0; cX < sWidth; cX++)
 	{
 		double mX1 = toMathX(cX);
 		double mY1;
-		if (!func.consider(mY1, mX1))
+		if (!func.consider(mY1, mX1) || isnan(mY1))
 			continue;
 		double mX2 = toMathX(cX + 1);
 		double mY2;
-		if (!func.consider(mY2, mX2))
+		if (!func.consider(mY2, mX2) || isnan(mY2))
 			continue;
 		int cY1 = toCrdY(mY1);
 		int cY2 = toCrdY(mY2);
@@ -121,6 +120,6 @@ void GraphDisplay::construct()
 			swap(cY1, cY2);
 		cY1 = max(cY1, 0);
 		cY2 = min(cY2, sHeight - 1);
-		line(window, cX, cY1, cX, cY2, cGraph);
+		line(window, cX, cY1, cX, cY2, color);
 	}
 }

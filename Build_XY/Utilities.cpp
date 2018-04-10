@@ -32,6 +32,32 @@ string to_string(char c)
 {
 	return string({ c });
 }
+string dtos(double val, int precision)
+{
+	char buffer[20];
+	string format = string("%.") + to_string(precision) + string("f");
+	sprintf_s(buffer, format.c_str(), val);
+	return string(buffer);
+}
+
+bool doubleEqual(double a, double b)
+{
+	return abs(a - b) < eps;
+}
+double getCloseLowerNum(double num, double val)
+{
+	int l = -1e9;
+	int r = 1e9;
+	while (l + 1 < r)
+	{
+		int mid = l + (r - l) / 2;
+		if (num < mid * val)
+			r = mid;
+		else
+			l = mid;
+	}
+	return val * l;
+}
 
 void line(Image& image, int x1, int y1, int x2, int y2, Color color)
 {
@@ -89,4 +115,13 @@ void cursorRestriction(const RenderWindow& window)
 		ny = 0;
 	if (x != nx || y != ny)
 		Mouse::setPosition(Vector2i(nx, ny), window);
+}
+
+bool isCursorInWindow(const RenderWindow& window)
+{
+	int w = window.getSize().x;
+	int h = window.getSize().y;
+	int x = Mouse::getPosition(window).x;
+	int y = Mouse::getPosition(window).y;
+	return 0 <= x && x < w && 0 <= y && y < h;
 }

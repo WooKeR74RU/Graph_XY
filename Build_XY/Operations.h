@@ -1,8 +1,6 @@
 #pragma once
 #include "Utilities.h"
 
-bool doubleEqual(double a, double b);
-
 bool unaryPlus(double& res, double x);
 bool unaryMinus(double& res, double x);
 bool abs(double& res, double x);

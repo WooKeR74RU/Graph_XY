@@ -1,56 +1,82 @@
 #include "GraphDisplay.h"
 
-GraphDisplay::GraphDisplay(int sWidth, int sHeight, const FuncYX& func, Color cBackground, Color cAxes, Color cGraph)
+GraphDisplay::GraphDisplay(int sWidth, int sHeight, const vector<pair<FuncYX, Color>>& funcs, Color cBackground, Color cAxes)
 {
 	this->sWidth = sWidth;
 	this->sHeight = sHeight;
-	this->func = func;
+	this->funcs = funcs;
 	this->cBackground = cBackground;
 	this->cAxes = cAxes;
-	this->cGraph = cGraph;
 	offsetX = 0;
 	offsetY = 0;
-	scale = 50;
-}
-
-void GraphDisplay::setView(double offsetX, double offsetY, double scale)
-{
-	this->offsetX = offsetX;
-	this->offsetY = offsetY;
-	this->scale = scale;
+	scale = defaultSegSize;
+	segSize = defaultSegSize;
+	axesStep = 1;
+	axesPrecision = 0;
 }
 
 void GraphDisplay::update(double deltaTime)
 {
-	dragging(deltaTime);
 	if (Keyboard::isKeyPressed(Keyboard::Up) || mouseWheelStatus == 1)
 	{
-		scale += scale * deltaTime / 2e5;
-		if (scale > 500)
-			scale = 500;
+		scale += scale * deltaTime * zoomSens;
+		if (scale > maxScale)
+			scale = maxScale;
+		while (segSize * 2 <= scale)
+		{
+			axesStep /= 2;
+			if (axesStep < 1)
+				axesPrecision++;
+			segSize *= 2;
+		}
 	}
 	if (Keyboard::isKeyPressed(Keyboard::Down) || mouseWheelStatus == -1)
 	{
-		scale -= scale * deltaTime / 2e5;
-		if (scale < 50)
-			scale = 50;
+		scale -= scale * deltaTime * zoomSens;
+		if (scale < minScale)
+			scale = minScale;
+		while (segSize / 2 >= scale)
+		{
+			axesStep *= 2;
+			if (axesStep <= 1)
+				axesPrecision--;
+			segSize /= 2;
+		}
 	}
+	dragging();
 	if (Keyboard::isKeyPressed(Keyboard::W))
-		offsetY += deltaTime / 1e3 / scale;
+		offsetY += deltaTime / scale * moveSens;
 	if (Keyboard::isKeyPressed(Keyboard::S))
-		offsetY -= deltaTime / 1e3 / scale;
+		offsetY -= deltaTime / scale * moveSens;
 	if (Keyboard::isKeyPressed(Keyboard::A))
-		offsetX -= deltaTime / 1e3 / scale;
+		offsetX -= deltaTime / scale * moveSens;
 	if (Keyboard::isKeyPressed(Keyboard::D))
-		offsetX += deltaTime / 1e3 / scale;
+		offsetX += deltaTime / scale * moveSens;
+}
+
+void GraphDisplay::dragging()
+{
+	static int prevX;
+	static int prevY;
+	if (Mouse::isButtonPressed(Mouse::Left))
+	{
+		int deltaX = Mouse::getPosition().x - prevX;
+		int deltaY = Mouse::getPosition().y - prevY;
+		offsetX -= deltaX / scale;
+		offsetY += deltaY / scale;
+	}
+	prevX = Mouse::getPosition().x;
+	prevY = Mouse::getPosition().y;
 }
 
 void GraphDisplay::display()
 {
 	window.clear(cBackground);
 	drawAxes();
-	cursorCoord();
-	construct();
+	//TODO: Координаты курсора для нескольких графиков
+	//cursorCoord();
+	for (int i = 0; i < funcs.size(); i++)
+		construct(funcs[i].first, funcs[i].second);
 	window.display();
 }
 
@@ -74,19 +100,4 @@ void GraphDisplay::run()
 		update(deltaTime);
 		display();
 	}
-}
-
-void GraphDisplay::dragging(double deltaTime)
-{
-	static int prevX;
-	static int prevY;
-	if (Mouse::isButtonPressed(Mouse::Left))
-	{
-		int deltaX = Mouse::getPosition().x - prevX;
-		int deltaY = Mouse::getPosition().y - prevY;
-		offsetX -= deltaX / scale;
-		offsetY += deltaY / scale;
-	}
-	prevX = Mouse::getPosition().x;
-	prevY = Mouse::getPosition().y;
 }

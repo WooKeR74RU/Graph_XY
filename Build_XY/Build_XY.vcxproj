@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Colors.cpp" />
     <ClCompile Include="GraphDisplay_1.cpp" />
     <ClCompile Include="Expression.cpp" />
     <ClCompile Include="FuncYX.cpp" />
@@ -147,6 +148,7 @@
     <Text Include="output.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Colors.h" />
     <ClInclude Include="GraphDisplay.h" />
     <ClInclude Include="Expression.h" />
     <ClInclude Include="FuncYX.h" />

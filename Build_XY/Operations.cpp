@@ -1,12 +1,6 @@
 #include "Operations.h"
 
 static const double pi = 3.14159265358979323846;
-static const double eps = 1e-9;
-
-bool doubleEqual(double a, double b)
-{
-	return abs(a - b) < eps;
-}
 
 bool unaryPlus(double& res, double x)
 {

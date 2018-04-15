@@ -137,7 +137,7 @@
     <ClCompile Include="Colors.cpp" />
     <ClCompile Include="GraphDisplay_1.cpp" />
     <ClCompile Include="Expression.cpp" />
-    <ClCompile Include="FuncYX.cpp" />
+    <ClCompile Include="Function.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="GraphDisplay_2.cpp" />
     <ClCompile Include="Operations.cpp" />
@@ -151,7 +151,7 @@
     <ClInclude Include="Colors.h" />
     <ClInclude Include="GraphDisplay.h" />
     <ClInclude Include="Expression.h" />
-    <ClInclude Include="FuncYX.h" />
+    <ClInclude Include="Function.h" />
     <ClInclude Include="Operations.h" />
     <ClInclude Include="Utilities.h" />
   </ItemGroup>

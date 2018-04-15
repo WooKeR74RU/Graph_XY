@@ -1,6 +1,6 @@
 #include "Operations.h"
 
-static const double pi = 3.14159265358979323846;
+static const double M_PI = 3.14159265358979323846;
 
 bool unaryPlus(double& res, double x)
 {
@@ -47,7 +47,7 @@ bool cos(double& res, double x)
 }
 bool tg(double& res, double x)
 {
-	if (!doubleEqual(fmod(x + pi / 2, pi), 0))
+	if (!doubleEqual(fmod(x + M_PI / 2, M_PI), 0))
 	{
 		res = tan(x);
 		return 1;
@@ -56,7 +56,7 @@ bool tg(double& res, double x)
 }
 bool ctg(double& res, double x)
 {
-	if (!doubleEqual(fmod(x, pi), 0))
+	if (!doubleEqual(fmod(x, M_PI), 0))
 	{
 		res = 1 / tan(x);
 		return 1;

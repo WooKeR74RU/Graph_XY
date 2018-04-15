@@ -7,24 +7,27 @@ int main()
 	initOperations();
 	initColors();
 
-	//string input;
-	//fin() >> input;
-	//FuncYX func = FuncYX(Expression(input));
-	//GraphDisplay display(900, 900, func, Color::White, Color::Black, Color::Blue);
-	//display.run();
-	//return 0;
-
 	int n;
 	fin() >> n;
-	vector<pair<FuncYX, Color>> funcs;
+	vector<pair<Function, Color>> funcs;
 	for (int i = 0; i < n; i++)
 	{
-		string func, color;
-		fin() >> func >> color;
-		funcs.push_back(make_pair(FuncYX(Expression(func)), getColor(color)));
+		string expr, color;
+		fin() >> expr >> color;
+		bool isYFunc = expr[0] == 'y';
+		bool isXFunc = expr[0] == 'x';
+		expr.erase(expr.begin(), expr.begin() + 2);
+		if (isYFunc)
+			funcs.push_back(make_pair(Function(Expression(expr), "x"), getColor(color)));
+		if (isXFunc)
+			funcs.push_back(make_pair(Function(Expression(expr), "y"), getColor(color)));
 	}
 	GraphDisplay display(900, 900, funcs, Color::White, Color::Black);
 	display.run();
 
 	return 0;
 }
+
+//TODO: Добавить функций
+//TODO: Зависимость от параметра
+//TODO: Написать слайдер

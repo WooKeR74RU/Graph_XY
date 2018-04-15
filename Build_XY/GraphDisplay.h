@@ -1,6 +1,6 @@
 #pragma once
 #include "Utilities.h"
-#include "FuncYX.h"
+#include "Function.h"
 
 static const double zoomSens = 1 / 2e5;
 static const double moveSens = 1 / 1e3;
@@ -16,7 +16,7 @@ private:
 	int sWidth;
 	int sHeight;
 
-	vector<pair<FuncYX, Color>> funcs;
+	vector<pair<Function, Color>> funcs;
 	Color cBackground;
 	Color cAxes;
 
@@ -25,8 +25,12 @@ private:
 	int mouseWheelStatus;
 	void dragging();
 
+	void drawAxes();
+	void construct(Function& func, Color color);
+	void graphMark();
+	int curMark;
+
 	double scale; //pixels per unit
-	double segSize;
 	double axesStep;
 	int axesPrecision;
 	double offsetX;
@@ -37,10 +41,8 @@ private:
 	double toMathY(int y) const;
 	int toCrdX(double x) const;
 	int toCrdY(double y) const;
-	void construct(const FuncYX& func, Color color);
-	void drawAxes();
-	void cursorCoord();
 public:
-	GraphDisplay(int sWidth, int sHeight, const vector<pair<FuncYX, Color>>& funcs, Color cBackground, Color cAxes);
+	GraphDisplay(int sWidth, int sHeight, const vector<pair<Function, Color>>& funcs, Color cBackground, Color cAxes);
+	void setView(double offsetX, double offsetY);
 	void run();
 };

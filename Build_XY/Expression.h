@@ -22,14 +22,16 @@ struct Block
 int getPrior(const string& oper);
 bool isRightAssoc(const string& oper);
 vector<Block> toRPN(const string& expr);
-bool calc(double& res, const vector<Block>& sequence, const map<string, double>& variables);
+bool calc(double& res, const vector<Block>& sequence, const map<string, double>& vars);
 
 class Expression
 {
 private:
 	vector<Block> sequence;
+	map<string, double> variables;
 public:
 	Expression();
 	Expression(const string& expr);
-	bool consider(double& res, const map<string, double>& variables) const;
+	void setVariable(const string& variable, double value);
+	bool consider(double& res) const;
 };

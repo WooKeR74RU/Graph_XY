@@ -35,7 +35,7 @@ void GraphDisplay::drawAxes()
 		markupText.setFillColor(cAxes);
 		INIT = 1;
 	}
-	
+
 	int x0 = toCrdX(0);
 	x0 = max(x0, markupLength);
 	x0 = min(x0, sWidth - 1 - markupLength);
@@ -76,50 +76,69 @@ void GraphDisplay::drawAxes()
 	}
 }
 
-//void GraphDisplay::cursorCoord()
-//{
-//	static const int dotRadius = 4;
-//	static CircleShape dot;
-//	static bool INIT = 0;
-//	if (!INIT)
-//	{
-//		dot.setFillColor(cGraph);
-//		dot.setRadius(dotRadius);
-//		INIT = 1;
-//	}
-//
-//	if (!isCursorInWindow(window))
-//		return;
-//	int cX = Mouse::getPosition(window).x;
-//	double mX = toMathX(cX);
-//	double mY;
-//	if (!func.consider(mY, mX) || isnan(mY))
-//		mY = NAN;
-//	window.setTitle(string("Graph_XY") + string(" | ") + string("x: ") + to_string(mX) + string(" y: ") + to_string(mY));
-//	dot.setPosition(cX - dotRadius, toCrdY(mY) - dotRadius);
-//	window.draw(dot);
-//}
-
-void GraphDisplay::construct(const FuncYX& func, Color color)
+void GraphDisplay::graphMark()
 {
-	for (int cX = 0; cX < sWidth; cX++)
+	static const int markPrecision = 6;
+	static const int dotRadius = 4;
+	static vector<CircleShape> dots;
+	static bool INIT = 0;
+	if (!INIT)
 	{
-		double mX1 = toMathX(cX);
-		double mY1;
-		if (!func.consider(mY1, mX1) || isnan(mY1))
+		dots.resize(funcs.size());
+		for (int i = 0; i < funcs.size(); i++)
+		{
+			dots[i].setFillColor(funcs[i].second);
+			dots[i].setRadius(dotRadius);
+		}
+		INIT = 1;
+	}
+	if (!isCursorInWindow(window))
+		return;
+	bool isArgX = funcs[curMark].first.argument == "x";
+	int cArg = isArgX ? Mouse::getPosition(window).x : Mouse::getPosition(window).y;
+	double mArg = isArgX ? toMathX(cArg) : toMathY(cArg);
+	funcs[curMark].first.setArgument(mArg);
+	double mRes;
+	if (!funcs[curMark].first.consider(mRes))
+		mRes = NAN;
+	string strX = dtos(isArgX ? mArg : mRes, markPrecision);
+	string strY = dtos(isArgX ? mRes : mArg, markPrecision);
+	window.setTitle(string("Graph_XY |") + string(" ID: ") + to_string(curMark + 1) + string(" X: ") + strX + string(" Y: ") + strY);
+	if (isnan(mRes))
+		return;
+	int cDotX = isArgX ? cArg : toCrdX(mRes);
+	int cDotY = isArgX ? toCrdY(mRes) : cArg;
+	bool isOnScreen = 0 <= cDotX + dotRadius && cDotX - dotRadius < sWidth && 0 <= cDotY + dotRadius && cDotY - dotRadius < sHeight;
+	if (isOnScreen)
+	{
+		dots[curMark].setPosition(cDotX - dotRadius, cDotY - dotRadius);
+		window.draw(dots[curMark]);
+	}
+}
+
+void GraphDisplay::construct(Function& func, Color color)
+{
+	bool isArgX = func.argument == "x";
+	for (int cArg = 0; cArg < (isArgX ? sWidth : sHeight); cArg++)
+	{
+		double mArg1 = isArgX ? toMathX(cArg) : toMathY(cArg);
+		double mRes1;
+		func.setArgument(mArg1);
+		if (!func.consider(mRes1) || isnan(mRes1))
 			continue;
-		double mX2 = toMathX(cX + 1);
-		double mY2;
-		if (!func.consider(mY2, mX2) || isnan(mY2))
+		double mArg2 = isArgX ? toMathX(cArg + 1) : toMathY(cArg + 1);
+		double mRes2;
+		func.setArgument(mArg2);
+		if (!func.consider(mRes2) || isnan(mRes2))
 			continue;
-		int cY1 = toCrdY(mY1);
-		int cY2 = toCrdY(mY2);
-		if (!onScreen(cX, cY1) && !onScreen(cX, cY2))
+		int cRes1 = isArgX ? toCrdY(mRes1) : toCrdX(mRes1);
+		int cRes2 = isArgX ? toCrdY(mRes2) : toCrdX(mRes2);
+		if (!onScreen(isArgX ? cArg : cRes1, isArgX ? cRes1 : cArg) && !onScreen(isArgX ? cArg : cRes2, isArgX ? cRes2 : cArg))
 			continue;
-		if (cY2 < cY1)
-			swap(cY1, cY2);
-		cY1 = max(cY1, 0);
-		cY2 = min(cY2, sHeight - 1);
-		line(window, cX, cY1, cX, cY2, color);
+		if (cRes2 < cRes1)
+			swap(cRes1, cRes2);
+		cRes1 = max(cRes1, 0);
+		cRes2 = min(cRes2, isArgX ? sHeight - 1 : sWidth - 1);
+		line(window, isArgX ? cArg : cRes1, isArgX ? cRes1 : cArg, isArgX ? cArg : cRes2, isArgX ? cRes2 : cArg, color);
 	}
 }

@@ -1,6 +1,6 @@
 #include "GraphDisplay.h"
 
-GraphDisplay::GraphDisplay(int sWidth, int sHeight, const vector<pair<FuncYX, Color>>& funcs, Color cBackground, Color cAxes)
+GraphDisplay::GraphDisplay(int sWidth, int sHeight, const vector<pair<Function, Color>>& funcs, Color cBackground, Color cAxes)
 {
 	this->sWidth = sWidth;
 	this->sHeight = sHeight;
@@ -10,9 +10,15 @@ GraphDisplay::GraphDisplay(int sWidth, int sHeight, const vector<pair<FuncYX, Co
 	offsetX = 0;
 	offsetY = 0;
 	scale = defaultSegSize;
-	segSize = defaultSegSize;
 	axesStep = 1;
 	axesPrecision = 0;
+	curMark = 0;
+}
+
+void GraphDisplay::setView(double offsetX, double offsetY)
+{
+	this->offsetX = offsetX;
+	this->offsetY = offsetY;
 }
 
 void GraphDisplay::update(double deltaTime)
@@ -22,12 +28,11 @@ void GraphDisplay::update(double deltaTime)
 		scale += scale * deltaTime * zoomSens;
 		if (scale > maxScale)
 			scale = maxScale;
-		while (segSize * 2 <= scale)
+		while (defaultSegSize / axesStep < scale)
 		{
 			axesStep /= 2;
 			if (axesStep < 1)
 				axesPrecision++;
-			segSize *= 2;
 		}
 	}
 	if (Keyboard::isKeyPressed(Keyboard::Down) || mouseWheelStatus == -1)
@@ -35,15 +40,14 @@ void GraphDisplay::update(double deltaTime)
 		scale -= scale * deltaTime * zoomSens;
 		if (scale < minScale)
 			scale = minScale;
-		while (segSize / 2 >= scale)
+		while (scale * 2 <= defaultSegSize / axesStep)
 		{
-			axesStep *= 2;
-			if (axesStep <= 1)
+			if (axesStep < 1)
 				axesPrecision--;
-			segSize /= 2;
+			axesStep *= 2;
 		}
 	}
-	dragging();
+
 	if (Keyboard::isKeyPressed(Keyboard::W))
 		offsetY += deltaTime / scale * moveSens;
 	if (Keyboard::isKeyPressed(Keyboard::S))
@@ -52,6 +56,20 @@ void GraphDisplay::update(double deltaTime)
 		offsetX -= deltaTime / scale * moveSens;
 	if (Keyboard::isKeyPressed(Keyboard::D))
 		offsetX += deltaTime / scale * moveSens;
+	dragging();
+
+	if (isKeyDown(Keyboard::Num1))
+	{
+		curMark--;
+		if (curMark == -1)
+			curMark = funcs.size() - 1;
+	}
+	if (isKeyDown(Keyboard::Num2))
+	{
+		curMark++;
+		if (curMark == funcs.size())
+			curMark = 0;
+	}
 }
 
 void GraphDisplay::dragging()
@@ -73,8 +91,7 @@ void GraphDisplay::display()
 {
 	window.clear(cBackground);
 	drawAxes();
-	//TODO: Координаты курсора для нескольких графиков
-	//cursorCoord();
+	graphMark();
 	for (int i = 0; i < funcs.size(); i++)
 		construct(funcs[i].first, funcs[i].second);
 	window.display();
@@ -95,6 +112,8 @@ void GraphDisplay::run()
 				window.close();
 			if (event.type == Event::MouseWheelScrolled)
 				mouseWheelStatus = event.mouseWheelScroll.delta;
+			if (event.type == Event::KeyReleased)
+				keyUp(event.key.code);
 		}
 		double deltaTime = clock.restart().asMicroseconds();
 		update(deltaTime);

@@ -2,6 +2,7 @@
 #include <fstream>
 #include <cmath> 
 #include <vector>
+#include <array>
 #include <string>
 #include <map>
 using namespace std;
@@ -28,3 +29,6 @@ void setPixel(RenderWindow& window, int x, int y, Color color);
 
 void cursorRestriction(const RenderWindow& window);
 bool isCursorInWindow(const RenderWindow& window);
+
+void keyUp(Keyboard::Key key);
+bool isKeyDown(Keyboard::Key key);

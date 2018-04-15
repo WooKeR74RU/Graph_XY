@@ -116,7 +116,6 @@ void cursorRestriction(const RenderWindow& window)
 	if (x != nx || y != ny)
 		Mouse::setPosition(Vector2i(nx, ny), window);
 }
-
 bool isCursorInWindow(const RenderWindow& window)
 {
 	int w = window.getSize().x;
@@ -124,4 +123,22 @@ bool isCursorInWindow(const RenderWindow& window)
 	int x = Mouse::getPosition(window).x;
 	int y = Mouse::getPosition(window).y;
 	return 0 <= x && x < w && 0 <= y && y < h;
+}
+
+static array<bool, Keyboard::KeyCount> state;
+void keyUp(Keyboard::Key key)
+{
+	state[key] = 0;
+}
+bool isKeyDown(Keyboard::Key key)
+{
+	if (Keyboard::isKeyPressed(key))
+	{
+		if (!state[key])
+		{
+			state[key] = 1;
+			return 1;
+		}
+	}
+	return 0;
 }

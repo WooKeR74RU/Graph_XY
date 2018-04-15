@@ -144,7 +144,7 @@ vector<Block> toRPN(const string& expr)
 	return res;
 }
 
-bool calc(double& res, const vector<Block>& sequence, const map<string, double>& variables)
+bool calc(double& res, const vector<Block>& sequence, const map<string, double>& vars)
 {
 	vector<double> stck;
 	for (int i = 0; i < sequence.size(); i++)
@@ -152,7 +152,7 @@ bool calc(double& res, const vector<Block>& sequence, const map<string, double>&
 		if (sequence[i].type == Block::VALUE)
 			stck.push_back(sequence[i].value);
 		if (sequence[i].type == Block::VARIABLE)
-			stck.push_back(variables.at(sequence[i].variable));
+			stck.push_back(vars.at(sequence[i].variable));
 		if (sequence[i].type == Block::UNARY)
 		{
 			double x = stck.back();
@@ -178,13 +178,19 @@ bool calc(double& res, const vector<Block>& sequence, const map<string, double>&
 	return 1;
 }
 
+static const double M_E = 2.71828182845904523536;
 Expression::Expression()
 { }
 Expression::Expression(const string& expr)
 {
 	sequence = toRPN(expr);
+	variables["e"] = M_E;
 }
-bool Expression::consider(double& res, const map<string, double>& variables) const
+void Expression::setVariable(const string& variable, double value)
+{
+	variables[variable] = value;
+}
+bool Expression::consider(double& res) const
 {
 	return calc(res, sequence, variables);
 }

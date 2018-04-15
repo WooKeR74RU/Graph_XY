@@ -1,7 +1,21 @@
-3
-cos(3*x)+sin(x) Aqua
-3*sin(x) Lime
-x^2 Red
+4
+y=cos(3*x)+sin(x) Aqua
+x=cos(3*y)+sin(y) Aqua
+y=3*sin(x) Lime
+y=x^2 Red
+
+4
+y=+sqrt(16-x^2) Blue
+x=+sqrt(16-y^2) Blue
+y=-sqrt(16-x^2) Blue
+x=-sqrt(16-y^2) Blue
+
+2
+y=+sqrt(16-x^2) Lime
+y=-sqrt(16-x^2) Lime
+
+1
+y=cos(3*x)+sin(x) Blue
 
 tg(x)
 x*x^2

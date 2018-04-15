@@ -2,6 +2,7 @@
 
 GraphDisplay::GraphDisplay(int sWidth, int sHeight, const vector<pair<Function, Color>>& funcs, Color cBackground, Color cAxes)
 {
+	input = InputSystem(window);
 	this->sWidth = sWidth;
 	this->sHeight = sHeight;
 	this->funcs = funcs;
@@ -21,13 +22,66 @@ void GraphDisplay::setView(double offsetX, double offsetY)
 	this->offsetY = offsetY;
 }
 
+void GraphDisplay::start()
+{
+	window.create(VideoMode(sWidth, sHeight), "Graph_XY", Style::Close);
+	window.setVerticalSyncEnabled(1);
+	window.setKeyRepeatEnabled(0);
+	Clock clock;
+	while (window.isOpen())
+	{
+		Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == Event::Closed)
+				window.close();
+			if (event.type == Event::KeyPressed)
+				input.keyboardKeyPressed(event.key.code);
+			if (event.type == Event::KeyReleased)
+				input.keyboardKeyReleased(event.key.code);
+			if (event.type == Event::MouseMoved)
+			{
+				input.isMouseMoved = 1;
+				input.mouseX = event.mouseMove.x;
+				input.mouseY = event.mouseMove.y;
+			}
+			if (event.type == Event::MouseEntered)
+				input.isMouseEntered = 1;
+			if (event.type == Event::MouseLeft)
+				input.isMouseLeft = 1;
+			if (event.type == Event::MouseButtonPressed)
+				input.mouseButtonPressed(event.mouseButton.button);
+			if (event.type == Event::MouseButtonReleased)
+				input.mouseButtonReleased(event.mouseButton.button);
+			if (event.type == Event::MouseWheelScrolled)
+			{
+				input.isMouseWheelScrolled = 1;
+				input.mouseWheelDelta = event.mouseWheelScroll.delta;
+			}
+		}
+		double deltaTime = clock.restart().asMicroseconds();
+		update(deltaTime);
+		input.refresh();
+		display();
+	}
+}
+
 void GraphDisplay::update(double deltaTime)
 {
-	if (Keyboard::isKeyPressed(Keyboard::Up) || mouseWheelStatus == 1)
+	static const double zoomKeysSens = 1 / 2e5;
+	static const double zoomWheelSens = zoomKeysSens * 3;
+	static const double moveSens = 1 / 1e3;
+
+	static const int maxScale = sqr(defaultSegSize);
+	static const int minScale = 1;
+
+	if (input.isKeyboardKeyPressed(Keyboard::Up) || input.mouseWheelDelta == 1)
 	{
-		scale += scale * deltaTime * zoomSens;
-		if (scale > maxScale)
-			scale = maxScale;
+		if (input.isKeyboardKeyPressed(Keyboard::Up))
+			scale += scale * deltaTime * zoomKeysSens;
+		if (input.mouseWheelDelta == 1)
+			scale += scale * deltaTime * zoomWheelSens;
+		scale = min(scale, (double)maxScale);
 		while (defaultSegSize / axesStep < scale)
 		{
 			axesStep /= 2;
@@ -35,11 +89,13 @@ void GraphDisplay::update(double deltaTime)
 				axesPrecision++;
 		}
 	}
-	if (Keyboard::isKeyPressed(Keyboard::Down) || mouseWheelStatus == -1)
+	if (input.isKeyboardKeyPressed(Keyboard::Down) || input.mouseWheelDelta == -1)
 	{
-		scale -= scale * deltaTime * zoomSens;
-		if (scale < minScale)
-			scale = minScale;
+		if (input.isKeyboardKeyPressed(Keyboard::Down))
+			scale -= scale * deltaTime * zoomKeysSens;
+		if (input.mouseWheelDelta == -1)
+			scale -= scale * deltaTime * zoomWheelSens;
+		scale = max(scale, (double)minScale);
 		while (scale * 2 <= defaultSegSize / axesStep)
 		{
 			if (axesStep < 1)
@@ -48,23 +104,23 @@ void GraphDisplay::update(double deltaTime)
 		}
 	}
 
-	if (Keyboard::isKeyPressed(Keyboard::W))
+	if (input.isKeyboardKeyPressed(Keyboard::W))
 		offsetY += deltaTime / scale * moveSens;
-	if (Keyboard::isKeyPressed(Keyboard::S))
-		offsetY -= deltaTime / scale * moveSens;
-	if (Keyboard::isKeyPressed(Keyboard::A))
+	if (input.isKeyboardKeyPressed(Keyboard::A))
 		offsetX -= deltaTime / scale * moveSens;
-	if (Keyboard::isKeyPressed(Keyboard::D))
+	if (input.isKeyboardKeyPressed(Keyboard::S))
+		offsetY -= deltaTime / scale * moveSens;
+	if (input.isKeyboardKeyPressed(Keyboard::D))
 		offsetX += deltaTime / scale * moveSens;
 	dragging();
 
-	if (isKeyDown(Keyboard::Num1))
+	if (input.isKeyboardKeyDown(Keyboard::Num1))
 	{
 		curMark--;
 		if (curMark == -1)
 			curMark = funcs.size() - 1;
 	}
-	if (isKeyDown(Keyboard::Num2))
+	if (input.isKeyboardKeyDown(Keyboard::Num2))
 	{
 		curMark++;
 		if (curMark == funcs.size())
@@ -72,51 +128,12 @@ void GraphDisplay::update(double deltaTime)
 	}
 }
 
-void GraphDisplay::dragging()
-{
-	static int prevX;
-	static int prevY;
-	if (Mouse::isButtonPressed(Mouse::Left))
-	{
-		int deltaX = Mouse::getPosition().x - prevX;
-		int deltaY = Mouse::getPosition().y - prevY;
-		offsetX -= deltaX / scale;
-		offsetY += deltaY / scale;
-	}
-	prevX = Mouse::getPosition().x;
-	prevY = Mouse::getPosition().y;
-}
-
 void GraphDisplay::display()
 {
 	window.clear(cBackground);
 	drawAxes();
-	graphMark();
 	for (int i = 0; i < funcs.size(); i++)
 		construct(funcs[i].first, funcs[i].second);
+	graphMark();
 	window.display();
-}
-
-void GraphDisplay::run()
-{
-	window.create(VideoMode(sWidth, sHeight), "Graph_XY", Style::Close);
-	window.setVerticalSyncEnabled(true);
-	Clock clock;
-	while (window.isOpen())
-	{
-		mouseWheelStatus = 0;
-		Event event;
-		while (window.pollEvent(event))
-		{
-			if (event.type == Event::Closed)
-				window.close();
-			if (event.type == Event::MouseWheelScrolled)
-				mouseWheelStatus = event.mouseWheelScroll.delta;
-			if (event.type == Event::KeyReleased)
-				keyUp(event.key.code);
-		}
-		double deltaTime = clock.restart().asMicroseconds();
-		update(deltaTime);
-		display();
-	}
 }

@@ -24,5 +24,5 @@ void initColors()
 
 Color getColor(const string& color)
 {
-	return colors[color];
+	return colors.at(color);
 }

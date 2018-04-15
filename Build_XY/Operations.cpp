@@ -1,67 +1,111 @@
 #include "Operations.h"
 
-static const double M_PI = 3.14159265358979323846;
-
-bool unaryPlus(double& res, double x)
+bool unaryPlus(double& res, double arg)
 {
-	res = x;
+	res = arg;
 	return 1;
 }
-bool unaryMinus(double& res, double x)
+bool unaryMinus(double& res, double arg)
 {
-	res = -x;
+	res = -arg;
 	return 1;
 }
-bool abs(double& res, double x)
+bool abs(double& res, double arg)
 {
-	res = abs(x);
+	res = abs(arg);
 	return 1;
 }
-bool sqrt(double& res, double x)
+bool sqrt(double& res, double arg)
 {
-	if (x >= 0)
+	if (arg >= 0)
 	{
-		res = sqrt(x);
+		res = sqrt(arg);
 		return 1;
 	}
 	return 0;
 }
-bool log2(double& res, double x)
+bool ln(double& res, double arg)
 {
-	if (x > 0)
+	if (arg > 0)
 	{
-		res = log2(x);
+		res = log(arg);
 		return 1;
 	}
 	return 0;
 }
-bool sin(double& res, double x)
+bool lg(double& res, double arg)
 {
-	res = sin(x);
+	if (arg > 0)
+	{
+		res = log10(arg);
+		return 1;
+	}
+	return 0;
+}
+bool log(double& res, double arg)
+{
+	if (arg > 0)
+	{
+		res = log2(arg);
+		return 1;
+	}
+	return 0;
+}
+bool sin(double& res, double arg)
+{
+	res = sin(arg);
 	return 1;
 }
-bool cos(double& res, double x)
+bool cos(double& res, double arg)
 {
-	res = cos(x);
+	res = cos(arg);
 	return 1;
 }
-bool tg(double& res, double x)
+bool tg(double& res, double arg)
 {
-	if (!doubleEqual(fmod(x + M_PI / 2, M_PI), 0))
+	if (!doubleEqual(fmod(arg + M_PI_2, M_PI), 0))
 	{
-		res = tan(x);
+		res = tan(arg);
 		return 1;
 	}
 	return 0;
 }
-bool ctg(double& res, double x)
+bool ctg(double& res, double arg)
 {
-	if (!doubleEqual(fmod(x, M_PI), 0))
+	if (!doubleEqual(fmod(arg, M_PI), 0))
 	{
-		res = 1 / tan(x);
+		res = 1 / tan(arg);
 		return 1;
 	}
 	return 0;
+}
+bool arcsin(double& res, double arg)
+{
+	if (-1 <= arg && arg <= 1)
+	{
+		res = asin(arg);
+		return 1;
+	}
+	return 0;
+}
+bool arccos(double& res, double arg)
+{
+	if (-1 <= arg && arg <= 1)
+	{
+		res = acos(arg);
+		return 1;
+	}
+	return 0;
+}
+bool arctg(double& res, double arg)
+{
+	res = atan(arg);
+	return 1;
+}
+bool arcctg(double& res, double arg)
+{
+	res = atan(-arg) + M_PI_2;
+	return 1;
 }
 
 bool addition(double& res, double a, double b)

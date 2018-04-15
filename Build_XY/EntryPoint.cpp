@@ -2,6 +2,11 @@
 #include "GraphDisplay.h"
 #include "Colors.h"
 
+static const int sWidth = 900;
+static const int sHeight = 900;
+static const Color colorBackground = Color::White;
+static const Color colorAxes = Color::Black;
+
 int main()
 {
 	initOperations();
@@ -22,12 +27,8 @@ int main()
 		if (isXFunc)
 			funcs.push_back(make_pair(Function(Expression(expr), "y"), getColor(color)));
 	}
-	GraphDisplay display(900, 900, funcs, Color::White, Color::Black);
-	display.run();
+	GraphDisplay display(sWidth, sHeight, funcs, colorBackground, colorAxes);
+	display.start();
 
 	return 0;
 }
-
-//TODO: Добавить функций
-//TODO: Зависимость от параметра
-//TODO: Написать слайдер

@@ -10,11 +10,17 @@ void initOperations()
 	unaryFuncs["minus"] = &unaryMinus;
 	unaryFuncs["abs"] = &abs;
 	unaryFuncs["sqrt"] = &sqrt;
-	unaryFuncs["log"] = &log2;
+	unaryFuncs["ln"] = &ln;
+	unaryFuncs["lg"] = &lg;
+	unaryFuncs["log"] = &log;
 	unaryFuncs["sin"] = &sin;
 	unaryFuncs["cos"] = &cos;
 	unaryFuncs["tg"] = &tg;
 	unaryFuncs["ctg"] = &ctg;
+	unaryFuncs["arcsin"] = &arcsin;
+	unaryFuncs["arccos"] = &arccos;
+	unaryFuncs["arctg"] = &arctg;
+	unaryFuncs["arcctg"] = &arcctg;
 	binaryFuncs["+"] = &addition;
 	binaryFuncs["-"] = &subtraction;
 	binaryFuncs["*"] = &multiplication;
@@ -178,7 +184,6 @@ bool calc(double& res, const vector<Block>& sequence, const map<string, double>&
 	return 1;
 }
 
-static const double M_E = 2.71828182845904523536;
 Expression::Expression()
 { }
 Expression::Expression(const string& expr)

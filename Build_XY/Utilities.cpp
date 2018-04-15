@@ -99,46 +99,20 @@ void setPixel(RenderWindow& window, int x, int y, Color color)
 
 void cursorRestriction(const RenderWindow& window)
 {
-	int w = window.getSize().x;
-	int h = window.getSize().y;
 	int x = Mouse::getPosition(window).x;
 	int y = Mouse::getPosition(window).y;
-	int nx = x;
-	int ny = y;
-	if (nx >= w)
-		nx = w;
-	if (nx < 0)
-		nx = 0;
-	if (ny >= h)
-		ny = h;
-	if (ny < 0)
-		ny = 0;
-	if (x != nx || y != ny)
-		Mouse::setPosition(Vector2i(nx, ny), window);
+	int newX = x;
+	int newY = y;
+	newX = min(newX, (int)window.getSize().x - 1);
+	newX = max(newX, 0);
+	newY = min(newY, (int)window.getSize().y - 1);
+	newY = max(newY, 0);
+	if (x != newX || y != newY)
+		Mouse::setPosition(Vector2i(newX, newY), window);
 }
 bool isCursorInWindow(const RenderWindow& window)
 {
-	int w = window.getSize().x;
-	int h = window.getSize().y;
 	int x = Mouse::getPosition(window).x;
 	int y = Mouse::getPosition(window).y;
-	return 0 <= x && x < w && 0 <= y && y < h;
-}
-
-static array<bool, Keyboard::KeyCount> state;
-void keyUp(Keyboard::Key key)
-{
-	state[key] = 0;
-}
-bool isKeyDown(Keyboard::Key key)
-{
-	if (Keyboard::isKeyPressed(key))
-	{
-		if (!state[key])
-		{
-			state[key] = 1;
-			return 1;
-		}
-	}
-	return 0;
+	return 0 <= x && x < window.getSize().x && 0 <= y && y < window.getSize().y;
 }

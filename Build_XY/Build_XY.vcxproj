@@ -140,6 +140,7 @@
     <ClCompile Include="Function.cpp" />
     <ClCompile Include="EntryPoint.cpp" />
     <ClCompile Include="GraphDisplay_2.cpp" />
+    <ClCompile Include="InputSystem.cpp" />
     <ClCompile Include="Operations.cpp" />
     <ClCompile Include="Utilities.cpp" />
   </ItemGroup>
@@ -152,6 +153,7 @@
     <ClInclude Include="GraphDisplay.h" />
     <ClInclude Include="Expression.h" />
     <ClInclude Include="Function.h" />
+    <ClInclude Include="InputSystem.h" />
     <ClInclude Include="Operations.h" />
     <ClInclude Include="Utilities.h" />
   </ItemGroup>

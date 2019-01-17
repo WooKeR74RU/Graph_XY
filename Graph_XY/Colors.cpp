@@ -1,6 +1,6 @@
 #include "Colors.h"
 
-static map<string, Color> colors;
+map<string, Color> colors;
 
 void initColors()
 {

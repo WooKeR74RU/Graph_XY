@@ -19,7 +19,7 @@ string substr(const string& str, int l, int r);
 string to_string(char c);
 string dtos(double val, int precision);
 
-static const double eps = 1e-9;
+const double eps = 1e-9;
 bool doubleEqual(double a, double b);
 double getCloseLowerNum(double num, double val);
 

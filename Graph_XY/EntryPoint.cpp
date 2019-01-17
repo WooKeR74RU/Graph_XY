@@ -2,13 +2,13 @@
 #include "GraphDisplay.h"
 #include "Colors.h"
 
-static const int sWidth = 900;
-static const int sHeight = 900;
-static const Color colorBackground = Color::White;
-static const Color colorAxes = Color::Black;
-
 int main()
 {
+	const int sWidth = 900;
+	const int sHeight = 900;
+	const Color colorBackground = Color::White;
+	const Color colorAxes = Color::Black;
+
 	initOperations();
 	initColors();
 

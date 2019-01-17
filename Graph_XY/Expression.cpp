@@ -1,8 +1,8 @@
 #include "Expression.h"
 #include "Operations.h"
 
-static map<string, Unary> unaryFuncs;
-static map<string, Binary> binaryFuncs;
+map<string, Unary> unaryFuncs;
+map<string, Binary> binaryFuncs;
 
 void initOperations()
 {

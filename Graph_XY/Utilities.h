@@ -13,7 +13,7 @@ using namespace sf;
 #define sqr(x) ((x) * (x))
 
 ifstream& fin();
-ofstream& fout();
+//ofstream& fout();
 
 string substr(const string& str, int l, int r);
 string to_string(char c);

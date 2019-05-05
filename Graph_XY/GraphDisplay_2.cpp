@@ -139,6 +139,8 @@ void GraphDisplay::graphMark()
 		window.setTitle(string("Graph_XY"));
 		return;
 	}
+	if (funcs.empty())
+		return;
 	bool isArgX = funcs[curMark].first.argument == "x";
 	int cArg = isArgX ? input.mouseX : input.mouseY;
 	double mArg = isArgX ? toMathX(cArg) : toMathY(cArg);

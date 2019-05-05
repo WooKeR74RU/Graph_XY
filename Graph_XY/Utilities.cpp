@@ -6,23 +6,23 @@ ifstream& fin()
 	static bool INIT = 0;
 	if (!INIT)
 	{
-		inputFileStream.open("input.txt");
+		inputFileStream.open("functions.txt");
 		INIT = 1;
 	}
 	return inputFileStream;
 }
-ofstream& fout()
-{
-	static ofstream outputFileStream;
-	static bool INIT = 0;
-	if (!INIT)
-	{
-		outputFileStream.open("output.txt");
-		outputFileStream.precision(4);
-		INIT = 1;
-	}
-	return outputFileStream;
-}
+//ofstream& fout()
+//{
+//	static ofstream outputFileStream;
+//	static bool INIT = 0;
+//	if (!INIT)
+//	{
+//		outputFileStream.open("output.txt");
+//		outputFileStream.precision(4);
+//		INIT = 1;
+//	}
+//	return outputFileStream;
+//}
 
 string substr(const string& str, int l, int r)
 {

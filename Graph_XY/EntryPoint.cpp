@@ -4,8 +4,8 @@
 
 int main()
 {
-	const int sWidth = 900;
-	const int sHeight = 900;
+	const int sWidth = 450;
+	const int sHeight = 450;
 	const Color colorBackground = Color::White;
 	const Color colorAxes = Color::Black;
 

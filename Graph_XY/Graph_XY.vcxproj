@@ -39,7 +39,7 @@
     <ClInclude Include="Utilities.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="input.txt" />
+    <Text Include="functions.txt" />
     <Text Include="output.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
